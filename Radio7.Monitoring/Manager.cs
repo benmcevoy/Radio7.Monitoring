@@ -1,70 +1,65 @@
 ﻿using Radio7.Monitoring.Pipes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using Radio7.Monitoring.Filters;
 
 namespace Radio7.Monitoring
 {
     public class Manager
     {
-
-        public Manager()
+        public IEnumerable<string> Run(SiteCollection sites)
         {
+            var errors = new List<string>(2048);
 
-        }
-
-
-        public void Run(SiteCollection sites)
-        {
             foreach (var site in sites.Sites)
             {
-                using (var wc = new HttpClient())
+                Debug.WriteLine("Began processing site:" + site);
+
+                var tests = site.Tests.Select(test => (IFilter)Activator.CreateInstance(Type.GetType(test))).ToList();
+                var paths = site.Paths;
+
+                foreach (var path in paths)
                 {
-                    foreach (var path in site.Paths)
-                    {
-                        var sw = System.Diagnostics.Stopwatch.StartNew();
-                        var url = GetUrl(path, site.BaseUrl);
-                        var response = wc.GetAsync(url).Result;
+                    Debug.WriteLine("Began processing path:" + path);
 
-                        sw.Stop();
+                    var ctx = CreateContext(site, path, errors);
 
-                        var context = CreateContext(url, sw.ElapsedMilliseconds, response);
+                    Pipeline
+                        .Create(
+                            new IFilter[] { new GetUrl(), new GetResponse() }.Union(tests))
+                        .Run(ctx);
 
-                        foreach (var test in site.Tests)
-                        {
-                            context = ((IFilter)Activator.CreateInstance(Type.GetType(test))).Run(context);
-                        }
-                    }
+                    errors = ctx.GetErrors().ToList();
                 }
             }
+
+            return errors;
         }
 
-        private IDictionary<string, object> CreateContext(string url, long elapsed, HttpResponseMessage response)
+        //private IEnumerable<string> ProcessSitemap(Site site)
+        //{
+        //    if (string.IsNullOrWhiteSpace(site.SiteMapUrl)) return Enumerable.Empty<string>();
+
+        //    using (var wc = new WebClient())
+        //    {
+        //        var siteMap = wc.DownloadString(site.SiteMapUrl);
+
+        //        if (string.IsNullOrWhiteSpace(siteMap)) return Enumerable.Empty<string>();
+
+
+        //    }
+        //}
+
+        private static IDictionary<string, object> CreateContext(Site site, string path, IList<string> errors)
         {
             var context = new Dictionary<string, object>();
-
-            context.SetUrl(url);
-            context.SetStatusCode(response.StatusCode);
-            context.SetResponseRaw(response.Content.ToString());
-            context.SetResponseTimeinMilliSeconds(elapsed);
+            context.SetErrors(errors);
+            context.SetSite(site);
+            context.SetPath(path);
 
             return context;
-        }
-
-        private string GetUrl(string path, string baseUrl)
-        {
-            var url = new Uri(path, UriKind.RelativeOrAbsolute);
-
-            if (url.IsAbsoluteUri)
-            {
-                return url.ToString();
-            }
-
-            return new Uri(new Uri(baseUrl, UriKind.Absolute), path).ToString();
         }
     }
 }
