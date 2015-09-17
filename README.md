@@ -1,6 +1,8 @@
 # Radio7.Monitoring
 push a bunch of URL's through a pipeline
 
+pipelines came from here: https://github.com/benmcevoy/Pipelines
+
 rough sketch of a monitoring service
 
 give it a list of url's or (eventually) a sitemap.xml
