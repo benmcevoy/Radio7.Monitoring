@@ -4,11 +4,15 @@ push a bunch of URL's through a pipeline
 rough sketch of a monitoring service
 
 give it a list of url's or (eventually) a sitemap.xml
+
 then push the response of each through a pipeline
+
 accumulate any errors and whatnot
+
 and then do something, like fail a test or make a report
 
 definition of a site and set of urls to check looks like:
+
 i'm using the wonderful seniorsonline cos that's the last site that went live
 
 ```
