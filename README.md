@@ -45,4 +45,4 @@ and internally the pipeline looks like
 ```
 
 Where `GetUrl`, `GetResponse` and the union of `tests` are all "filters" in the pipe.
-Each url is pushed through this pipeline and accumaltess any errors or what have you
+Each url is pushed through this pipeline and accumulates any errors or what have you
