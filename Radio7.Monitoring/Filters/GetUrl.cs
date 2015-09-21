@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Radio7.Monitoring.Pipes;
 
 namespace Radio7.Monitoring.Filters
 {

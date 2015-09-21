@@ -1,24 +1,29 @@
-﻿using Radio7.Monitoring.Pipes;
-using System;
+﻿using Radio7.Monitoring.Filters;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Radio7.Monitoring.Filters;
 
 namespace Radio7.Monitoring
 {
     public class Manager
     {
-        public IEnumerable<string> Run(SiteCollection sites)
+        private readonly SitemapProcessor _sitemapProcessor;
+
+        public Manager(SitemapProcessor sitemapProcessor)
+        {
+            _sitemapProcessor = sitemapProcessor;
+        }
+
+        public ICollection<string> Run(SiteCollection sites)
         {
             var errors = new List<string>(2048);
 
             foreach (var site in sites.Sites)
             {
-                Debug.WriteLine("Began processing site:" + site);
+                Debug.WriteLine("Began processing site:" + site.Name);
 
-                var tests = site.Tests.Select(test => (IFilter)Activator.CreateInstance(Type.GetType(test))).ToList();
-                var paths = site.Paths;
+                var tests = site.Tests.ToList();
+                var paths = _sitemapProcessor.Process(site).Union(site.Paths);
 
                 foreach (var path in paths)
                 {
@@ -26,8 +31,7 @@ namespace Radio7.Monitoring
 
                     var ctx = CreateContext(site, path, errors);
 
-                    Pipeline
-                        .Create(
+                    new Pipeline(
                             new IFilter[] { new GetUrl(), new GetResponse() }.Union(tests))
                         .Run(ctx);
 
@@ -37,20 +41,6 @@ namespace Radio7.Monitoring
 
             return errors;
         }
-
-        //private IEnumerable<string> ProcessSitemap(Site site)
-        //{
-        //    if (string.IsNullOrWhiteSpace(site.SiteMapUrl)) return Enumerable.Empty<string>();
-
-        //    using (var wc = new WebClient())
-        //    {
-        //        var siteMap = wc.DownloadString(site.SiteMapUrl);
-
-        //        if (string.IsNullOrWhiteSpace(siteMap)) return Enumerable.Empty<string>();
-
-
-        //    }
-        //}
 
         private static IDictionary<string, object> CreateContext(Site site, string path, IList<string> errors)
         {
