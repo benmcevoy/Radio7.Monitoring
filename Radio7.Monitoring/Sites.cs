@@ -20,7 +20,7 @@ namespace Radio7.Monitoring
         public override string ToString()
         {
             return string.Format(@"name: '{0}'; Do warm up: '{1}'; Enforce Ssl: '{2}'; Base url: '{3}'; Site map url: '{4}'",
-                Name, DoWarmupRequest, EnforceSslCertificatateValidation, BaseUrl, SiteMapUrl);
+                Name, DoWarmupRequest, DisableSslCertificatateValidation, BaseUrl, SiteMapUrl);
         }
 
         public string Name { get; set; }
@@ -28,7 +28,7 @@ namespace Radio7.Monitoring
         public string BaseUrl { get; set; }
         public string SiteMapUrl { get; set; }
         public string SitemapXmlns { get; set; }
-        public bool EnforceSslCertificatateValidation { get; set; }
+        public bool DisableSslCertificatateValidation { get; set; }
         public IEnumerable<string> Paths { get; set; }
         public IEnumerable<IFilter> Tests { get; set; }
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Radio7.Monitoring.Filters
 {
@@ -9,12 +8,7 @@ namespace Radio7.Monitoring.Filters
         {
             var path = context.GetPath();
             var baseUrl = context.GetSite().BaseUrl;
-
-            var url = new Uri(path, UriKind.RelativeOrAbsolute);
-
-            var result = url.IsAbsoluteUri 
-                ? url.ToString() 
-                : new Uri(new Uri(baseUrl, UriKind.Absolute), path).ToString();
+            var result = UrlHelper.ToAbsoluteUrl(path, baseUrl);
 
             context.SetUrl(result);
 

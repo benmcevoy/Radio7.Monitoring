@@ -5,12 +5,13 @@ namespace Radio7.Monitoring
 {
     class SslDisabler : IDisposable
     {
-        public SslDisabler()
+        public SslDisabler(bool disableSslCertificatateValidation)
         {
             try
             {
                 // Change SSL checks so that all checks pass
-                ServicePointManager.ServerCertificateValidationCallback = (delegate { return true; } );
+                if (disableSslCertificatateValidation)
+                    ServicePointManager.ServerCertificateValidationCallback = (delegate { return true; });
             }
             catch { }
         }
@@ -21,7 +22,7 @@ namespace Radio7.Monitoring
             if (_disposing) return;
 
             _disposing = true;
-            
+
             ServicePointManager.ServerCertificateValidationCallback = null;
         }
     }

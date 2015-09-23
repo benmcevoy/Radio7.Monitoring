@@ -9,18 +9,11 @@ namespace Radio7.Monitoring.Filters
         {
             var site = context.GetSite();
 
-            if (!site.EnforceSslCertificatateValidation)
+            using (new SslDisabler(site.DisableSslCertificatateValidation))
             {
-                using (new SslDisabler())
-                {
-                    DoRequest(context, site);
-                    return context;
-                }
+                DoRequest(context, site);
+                return context;
             }
-
-            DoRequest(context, site);
-            
-            return context;
         }
 
         private static void DoRequest(IDictionary<string, object> context, Site site)
@@ -33,7 +26,7 @@ namespace Radio7.Monitoring.Filters
                 }
 
                 var sw = System.Diagnostics.Stopwatch.StartNew();
-            
+
                 var response = wc.GetAsync(context.GetUrl()).Result;
                 var body = response.Content.ReadAsStringAsync().Result;
 

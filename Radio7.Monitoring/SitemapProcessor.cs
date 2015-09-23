@@ -11,9 +11,11 @@ namespace Radio7.Monitoring
         {
             if (string.IsNullOrWhiteSpace(site.SiteMapUrl)) return Enumerable.Empty<string>();
 
+            using (new SslDisabler(site.DisableSslCertificatateValidation))
             using (var wc = new WebClient())
             {
-                var siteMap = wc.DownloadString(site.SiteMapUrl);
+                var siteMapUrl = UrlHelper.ToAbsoluteUrl(site.SiteMapUrl, site.BaseUrl);
+                var siteMap = wc.DownloadString(siteMapUrl);
 
                 if (string.IsNullOrWhiteSpace(siteMap)) return Enumerable.Empty<string>();
 

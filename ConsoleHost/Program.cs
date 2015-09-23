@@ -16,15 +16,18 @@ namespace ConsoleHost
             {
                 new Site
                     {
-                        Name = "my website",
+                        Name = "Seniors",
                         DoWarmupRequest = true,
-                        EnforceSslCertificatateValidation = false,
-                        BaseUrl = "https://mywebsite.local/",
-                        SiteMapUrl = "https://mywebsite.local/sitemap.xml",
+                        DisableSslCertificatateValidation = true,
+                        BaseUrl = "https://www.seniorsonline.vic.gov.au/",
+                        //SiteMapUrl = "sitemap.xml",
+                        Paths = new []{ "https://www.seniorsonline.vic.gov.au/" },
                         Tests = new List<IFilter>
                         {
                             new CheckStatusCodeIs200(),
-                            new Tests.CheckResponseTimeIsLessThanNSeconds(2)
+                            new Tests.CheckResponseTimeIsLessThanNSeconds(2),
+                            new Tests.CheckHtmlExists(@"<div id=""layout"" "),
+                            new Tests.CheckHtmlDoesNotExist(@"<h1>Error</h1>"),
                         }
                     },
             };

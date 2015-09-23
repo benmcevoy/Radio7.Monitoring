@@ -53,6 +53,7 @@
     <Compile Include="Sites.cs" />
     <Compile Include="SslDisabler.cs" />
     <Compile Include="Filters\CheckStatusCodeIs200.cs" />
+    <Compile Include="UrlHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
