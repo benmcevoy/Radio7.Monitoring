@@ -19,11 +19,14 @@ i'm using the wonderful seniorsonline cos that's the last site that went live
 
 ```
     new Site {
+        Name = "Seniors",
+        DoWarmupRequest = true,
+        DisableSslCertificatateValidation = true,
         BaseUrl = "https://www.seniorsonline.vic.gov.au/",
-        Tests = new List<string>
+        Tests = new List<IFilter>
         {
-            "Radio7.Monitoring.Tests.CheckStatusCodeIs200, Radio7.Monitoring",
-            "Radio7.Monitoring.Tests.CheckResponseTimeIsLessThan10Seconds, Radio7.Monitoring"
+            new CheckStatusCodeIs200(),
+            new Tests.CheckResponseTimeIsLessThanNSeconds(2),
         },
         Paths = new List<string>
         {
