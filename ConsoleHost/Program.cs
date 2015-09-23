@@ -1,10 +1,8 @@
 ﻿using Radio7.Monitoring;
+using Radio7.Monitoring.Filters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleHost
 {
@@ -16,24 +14,25 @@ namespace ConsoleHost
 
             sites.Sites = new List<Site>()
             {
-                new Site {
-                    BaseUrl = "https://www.seniorsonline.vic.gov.au/",
-                    Tests = new List<string>
+                new Site
                     {
-                        "Radio7.Monitoring.Tests.CheckStatusCodeIs200, Radio7.Monitoring",
-                        "Radio7.Monitoring.Tests.CheckResponseTimeIsLessThan10Seconds, Radio7.Monitoring"
+                        Name = "Seniors",
+                        DoWarmupRequest = true,
+                        DisableSslCertificatateValidation = true,
+                        BaseUrl = "https://www.seniorsonline.vic.gov.au/",
+                        //SiteMapUrl = "sitemap.xml",
+                        Paths = new []{ "https://www.seniorsonline.vic.gov.au/" },
+                        Tests = new List<IFilter>
+                        {
+                            new CheckStatusCodeIs200(),
+                            new Tests.CheckResponseTimeIsLessThanNSeconds(2),
+                            new Tests.CheckHtmlExists(@"<div id=""layout"" "),
+                            new Tests.CheckHtmlDoesNotExist(@"<h1>Error</h1>"),
+                        }
                     },
-                    Paths = new List<string>
-                    {
-                        "https://www.seniorsonline.vic.gov.au/festivalsandawards/past-highlights/festival programs",
-                        "https://www.seniorsonline.vic.gov.au/news-opinions/blogs/blog-topics/balanced-life",
-                        "https://www.seniorsonline.vic.gov.au/news-opinions/blogs/blog-topics/being-with-our-elders",
-
-                    }
-                }
             };
 
-            var errors = new Manager().Run(sites);
+            var errors = new Manager(new SitemapProcessor()).Run(sites);
 
             foreach (var error in errors)
             {

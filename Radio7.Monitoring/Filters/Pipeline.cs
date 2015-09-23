@@ -1,25 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Radio7.Monitoring.Pipes
+namespace Radio7.Monitoring.Filters
 {
     public class Pipeline : IFilter
     {
         private readonly IEnumerable<IFilter> _filters;
 
-        protected Pipeline()
-        {
-            _filters = new List<IFilter>(32);
-        }
-
-        protected Pipeline(IEnumerable<IFilter> filters)
+        public Pipeline(IEnumerable<IFilter> filters)
         {
             _filters = filters;
-        }
-
-        public static Pipeline Create(IEnumerable<IFilter> filters)
-        {
-            return new Pipeline(filters);
         }
 
         public IDictionary<string, object> Run(IDictionary<string, object> context)

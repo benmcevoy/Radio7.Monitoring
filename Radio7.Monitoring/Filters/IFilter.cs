@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Radio7.Monitoring.Pipes
+namespace Radio7.Monitoring.Filters
 {
     public interface IFilter
     {

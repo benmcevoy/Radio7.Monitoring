@@ -1,8 +1,7 @@
-﻿using Radio7.Monitoring.Pipes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 
-namespace Radio7.Monitoring.Tests
+namespace Radio7.Monitoring.Filters
 {
     public class CheckStatusCodeIs200 : IFilter
     {

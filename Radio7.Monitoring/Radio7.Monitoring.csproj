@@ -41,20 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigSection.cs" />
     <Compile Include="ContextExtensions.cs" />
     <Compile Include="Filters\GetResponse.cs" />
     <Compile Include="Filters\GetUrl.cs" />
     <Compile Include="Manager.cs" />
-    <Compile Include="Pipes\IFilter.cs" />
-    <Compile Include="Pipes\Pipeline.cs" />
+    <Compile Include="Filters\IFilter.cs" />
+    <Compile Include="Filters\Pipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SitemapProcessor.cs" />
     <Compile Include="Sites.cs" />
-    <Compile Include="Tests\CheckResponseTimeIsLessThan10Seconds.cs" />
-    <Compile Include="Tests\CheckStatusCodeIs200.cs" />
+    <Compile Include="SslDisabler.cs" />
+    <Compile Include="Filters\CheckStatusCodeIs200.cs" />
+    <Compile Include="UrlHelper.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
